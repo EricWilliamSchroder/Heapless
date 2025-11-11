@@ -29,7 +29,7 @@ It’s part game, part technical statement: *you don’t need a garbage collecto
 
 2. **🧍 No AI Assistance**
 
-   * This README is the **only** exception — AI was used *only* to write this document.
+   * This README and docs of the code is the **only** exception — AI was used *only* to write this document.
    * From here on, **no ChatGPT**, **no Copilot**, **no LLMs**.
    * **Google** is allowed for documentation and research only.
 

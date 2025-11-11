@@ -1,32 +1,71 @@
 package src
 
-
-type Part struct{
-	X, Y int // x and y coordinates of the snake **PART**
-	Head *Snake // it knows the the head
-	Tail *Snake // it knows the tail
-}
+import (
+	"fmt"
+)
 
 
+const MaxSnakeLength = 100
+
+
+
+// Snake represents the full snake in the game.
+// It holds a reference to the root part of the snake (usually the head)
+// and can be extended to store additional game-related data such as score or length.
 type Snake struct {
+	// root is the first segment of the snake, typically the head.
 	root *Part
-	// score so forth in here
+	parts *[MaxSnakeLength]Part
+	length int
+
 }
 
-func AddToSnake(newPart *Part, snake **Snake){
-	if newPart == nil {
-		// nothing we can do if caller didn't provide a pointer to *Snake
-		return
-	}
-	if *snake == nil {
-		// initialize the Snake and set the root
-		*snake = &Snake{root: newPart}
-		return
-	}
-	addPart(newPart, &(*snake).root)
+
+// Part is a basic linked list
+// Part represents a single segment of the snake's body.
+// Each Part knows its coordinates and optionally links to the head and tail.
+// This allows easy traversal and management of the snake body.
+type Part struct {
+	// x and y are the coordinates of this snake part on the game grid.
+	x, y int
+	head *Part
+	tail *Part
 }
 
-func addPart(newPart *Part, part **Part){
-	
+func (s *Snake) InitWithParts(preParts *[]Part){
+	s.parts	= preParts
+	s.length = 0
+	s.root = nil
+}
+
+func (s *Snake) CreateSnake(initX, initY int){
+	(*s.parts)[0] = Part{x : initX, y : initY, head : &(*s.parts)[0]}
+	s.root = &(*s.parts)[0]
+	s.length = 1
+}
+
+
+func (s *Snake) AddPart(x, y int){
+	if (s.length >= len(*s.parts)){
+		// TODO: Add victory as the snake cannot be longer
+		return
+	}
+
+	newPart := &(*s.parts)[s.length]
+	newPart.x = x
+	newPart.y = y
+	newPart.head = s.root
+	newPart.tail = nil
+
+	previousTail := &(*s.parts)[s.length - 1]
+	previousTail.tail = newPart
+	s.length++
+}
+
+func (s *Snake) PrintSnake() {
+	for i := 0; i < s.length; i++ {
+		p := &(*s.parts)[i]
+		fmt.Printf("Part %d: x=%d, y=%d\n", i, p.x, p.y)
+	}
 }
 
