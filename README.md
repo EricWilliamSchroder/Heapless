@@ -24,6 +24,9 @@ It’s part game, part technical statement: *you don’t need a garbage collecto
      If the output contains `"escapes to heap"`, it’s invalid.
      Everything must live on the stack.
 
+     If fmt.Println or similar that gives out some heap warning assume it is for debugging only and it will be removed in up coming commits.
+
+
 2. **🧍 No AI Assistance**
 
    * This README is the **only** exception — AI was used *only* to write this document.
