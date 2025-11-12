@@ -1,7 +1,8 @@
 package src
 
 import (
-	"fmt"
+	"os"
+	"strconv"
 )
 
 
@@ -28,12 +29,25 @@ type Snake struct {
 type Part struct {
 	// x and y are the coordinates of this snake part on the game grid.
 	x, y int
+	index int
 	head *Part
 	tail *Part
 }
 
-func (s *Snake) GetParts()[MaxSnakeLength]Part {
-	return parts
+func (s *Snake) GetParts() *[MaxSnakeLength]Part {
+	return s.parts
+}
+
+func (s *Snake) GetHead() *Part {
+	if s.length == 0 || s.parts == nil {
+		return nil
+	}
+	return &(*s.parts)[s.length-1]
+}
+
+
+func (p *Part) GetTail() *Part{
+	return p.tail
 }
 
 func (s *Snake) Length()int{
@@ -47,7 +61,7 @@ func (s *Snake) InitWithParts(){
 }
 
 func (s *Snake) CreateSnake(initX, initY int){
-	(*s.parts)[0] = Part{x : initX, y : initY, head : &(*s.parts)[0]}
+	(*s.parts)[0] = Part{x : initX, y : initY, head : &(*s.parts)[0], index: 0}
 	s.root = &(*s.parts)[0]
 	s.length = 1
 }
@@ -57,29 +71,87 @@ func (p *Part) GetXY() (int, int){
 }
 
 
-func (s *Snake) AddPart(x, y int){
-	if (s.length >= len(*s.parts)){
-		// TODO: Add victory as the snake cannot be longer
+func (s *Snake) AddPart(x, y int) {
+	
+
+	if s.length >= len(*s.parts) {
 		return
 	}
 
 	newPart := &(*s.parts)[s.length]
 	newPart.x = x
 	newPart.y = y
+	newPart.index = s.length
 	newPart.head = s.root
 	newPart.tail = nil
 
-	previousTail := &(*s.parts)[s.length - 1]
-	previousTail.tail = newPart
+	// sätt tail på förra sista delen
+	if s.length > 0 {
+		prevTail := &(*s.parts)[s.length-1]
+		prevTail.tail = newPart
+	}
+
 	s.length++
 }
+
+func (s *Snake) MoveUp() {
+	if s.length == 0 {
+		return
+	}
+
+	// Spara förra positionen
+	prevX, prevY := s.root.x, s.root.y
+	s.root.y-- // flytta huvudet upp
+
+	for i := 1; i < s.length; i++ {
+		p := &s.parts[i]
+		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	}
+}
+
+func (s *Snake) MoveDown() {
+	if s.length == 0 { return }
+	prevX, prevY := s.root.x, s.root.y
+	s.root.y++ 
+	for i := 1; i < s.length; i++ {
+		p := &s.parts[i]
+		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	}
+}
+
+func (s *Snake) MoveLeft() {
+	if s.length == 0 { return }
+	prevX, prevY := s.root.x, s.root.y
+	s.root.x-- 
+	for i := 1; i < s.length; i++ {
+		p := &s.parts[i]
+		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	}
+}
+
+func (s *Snake) MoveRight() {
+	if s.length == 0 { return }
+	prevX, prevY := s.root.x, s.root.y
+	s.root.x++ 
+	for i := 1; i < s.length; i++ {
+		p := &s.parts[i]
+		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	}
+}
+
 
 
 
 func (s *Snake) PrintSnake() {
 	for i := 0; i < s.length; i++ {
 		p := &(*s.parts)[i]
-		fmt.Printf("Part %d: x=%d, y=%d\n", i, p.x, p.y)
+		seq := "\033[" + strconv.Itoa((*p).y+1) + ";" + strconv.Itoa((*p).x+1) + "H"
+		os.Stdout.Write([]byte(seq))
+		if (*p).index < 1 {
+			os.Stdout.Write([]byte("0"))
+		} else {
+			os.Stdout.Write([]byte("█"))
+		} 
 	}
 }
 
