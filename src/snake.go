@@ -52,6 +52,10 @@ func (s *Snake) CreateSnake(initX, initY int){
 	s.length = 1
 }
 
+func (p *Part) GetXY() (int, int){
+	return (*p).x, (*p).y
+}
+
 
 func (s *Snake) AddPart(x, y int){
 	if (s.length >= len(*s.parts)){
