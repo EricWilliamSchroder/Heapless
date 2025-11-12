@@ -6,7 +6,7 @@ import (
 
 
 const MaxSnakeLength = 100
-
+var parts [MaxSnakeLength]Part // global array, guaranteed not on heap
 
 
 // Snake represents the full snake in the game.
@@ -32,8 +32,16 @@ type Part struct {
 	tail *Part
 }
 
-func (s *Snake) InitWithParts(preParts *[]Part){
-	s.parts	= preParts
+func (s *Snake) GetParts()[MaxSnakeLength]Part {
+	return parts
+}
+
+func (s *Snake) Length()int{
+	return s.length
+}
+
+func (s *Snake) InitWithParts(){
+	s.parts = &parts
 	s.length = 0
 	s.root = nil
 }
@@ -61,6 +69,8 @@ func (s *Snake) AddPart(x, y int){
 	previousTail.tail = newPart
 	s.length++
 }
+
+
 
 func (s *Snake) PrintSnake() {
 	for i := 0; i < s.length; i++ {
