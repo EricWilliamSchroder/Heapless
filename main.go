@@ -7,7 +7,8 @@ import (
 )
 
 var snake src.Snake // global Snake, stays stack/global
-var board [10][10]int
+const size int = 10
+var board [size][size]int
 
 var cleanupDone = make(chan struct{})
 
@@ -40,40 +41,7 @@ func gameLoop() {
 				return
 			}
 
-			switch value {
-			case 'w':
-				snake.MoveUp()
-				src.PrintBoard(board, snake)
-				break
-			case 's':
-				snake.MoveDown()
-				src.PrintBoard(board, snake)
-				break
-
-			case 'd':
-				snake.MoveRight()
-				src.PrintBoard(board, snake)
-				break
-			case 'a':
-				snake.MoveLeft()
-				src.PrintBoard(board, snake)
-				break
-
-			case 'q':
-
-				head := snake.GetHead()
-				x, y := head.GetXY()
-				y++ // öka y för att växa nedåt
-				snake.AddPart(x, y)
-
-				if snake.Length() > 0 {
-					snake.PrintSnake()
-				}
-				break
-
-			case 27: // ESC
-				return
-			}
+			snake.Move(value, board)
 		}
 	}
 }

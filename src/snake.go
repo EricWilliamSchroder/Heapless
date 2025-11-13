@@ -2,6 +2,7 @@ package src
 
 import (
 	"os"
+	"slices"
 	"strconv"
 )
 
@@ -94,53 +95,74 @@ func (s *Snake) AddPart(x, y int) {
 	s.length++
 }
 
-func (s *Snake) MoveUp() {
-	if s.length == 0 {
-		return
+func (s *Snake) Move(button byte, board [10][10]int){
+	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q'}
+
+	isLegalButton := slices.Contains(legalKeyPresses, button)
+
+	if (!isLegalButton){return}
+
+	if s.length == 0 {return}
+
+	prevX, prevY := s.root.x, s.root.y
+	specialCase := false
+
+	switch button {
+		case 'w':
+			s.moveUp()
+		case 's':
+			s.moveDown()
+		case 'd':
+			s.moveRight()
+		case 'a':
+			s.moveLeft()
+		case 'q':
+			s.increaseSnakeLength()
+			specialCase = true
+		case 27:
+			return
+
 	}
 
-	// Spara förra positionen
-	prevX, prevY := s.root.x, s.root.y
+	if (specialCase){return}
+
+	for i := 1; i < s.length; i++ {
+		p := &s.parts[i]
+		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	}
+
+	PrintBoard(board, *s)
+}
+
+func (s *Snake) increaseSnakeLength(){
+	head := s.GetHead()
+	x, y := head.GetXY()
+	y++ // öka y för att växa nedåt
+	s.AddPart(x, y)
+
+	if s.Length() > 0 {
+		s.PrintSnake()
+	}
+}
+
+func (s *Snake) moveUp() {
 	s.root.y-- // flytta huvudet upp
-
-	for i := 1; i < s.length; i++ {
-		p := &s.parts[i]
-		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
-	}
 }
 
-func (s *Snake) MoveDown() {
-	if s.length == 0 { return }
-	prevX, prevY := s.root.x, s.root.y
+func (s *Snake) moveDown() {
 	s.root.y++ 
-	for i := 1; i < s.length; i++ {
-		p := &s.parts[i]
-		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
-	}
+
 }
 
-func (s *Snake) MoveLeft() {
-	if s.length == 0 { return }
-	prevX, prevY := s.root.x, s.root.y
+func (s *Snake) moveLeft() {
 	s.root.x-- 
-	for i := 1; i < s.length; i++ {
-		p := &s.parts[i]
-		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
-	}
+
 }
 
-func (s *Snake) MoveRight() {
-	if s.length == 0 { return }
-	prevX, prevY := s.root.x, s.root.y
+func (s *Snake) moveRight() {
 	s.root.x++ 
-	for i := 1; i < s.length; i++ {
-		p := &s.parts[i]
-		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
-	}
+
 }
-
-
-
 
 func (s *Snake) PrintSnake() {
 	for i := 0; i < s.length; i++ {
