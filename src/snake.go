@@ -4,6 +4,7 @@ import (
 	"os"
 	"slices"
 	"strconv"
+	"math"
 )
 
 
@@ -106,16 +107,17 @@ func (s *Snake) Move(button byte, board [10][10]int){
 
 	prevX, prevY := s.root.x, s.root.y
 	specialCase := false
+	completedMove := false
 
 	switch button {
 		case 'w':
-			s.moveUp()
+			completedMove = s.moveUp()
 		case 's':
-			s.moveDown()
+			completedMove = s.moveDown()
 		case 'd':
-			s.moveRight()
+			completedMove = s.moveRight()
 		case 'a':
-			s.moveLeft()
+			completedMove = s.moveLeft()
 		case 'q':
 			s.increaseSnakeLength()
 			specialCase = true
@@ -124,7 +126,8 @@ func (s *Snake) Move(button byte, board [10][10]int){
 
 	}
 
-	if (specialCase){return}
+	if (specialCase || !completedMove){return}
+	
 
 	for i := 1; i < s.length; i++ {
 		p := &s.parts[i]
@@ -145,22 +148,61 @@ func (s *Snake) increaseSnakeLength(){
 	}
 }
 
-func (s *Snake) moveUp() {
+func (s *Snake) isValidMove() bool{
+	sideF := math.Sqrt(MaxSnakeLength)
+	side := int(sideF)
+
+	if (s.root.y >= side || s.root.y < 0){return false}
+	if (s.root.x >= side || s.root.x < 0){return false}
+
+	return true
+	
+}
+
+func (s *Snake) moveUp() bool {
 	s.root.y-- // flytta huvudet upp
+	if (!s.isValidMove()){
+		// redo the move
+		s.root.y++
+		return false
+	}
+	return true
+
+
 }
 
-func (s *Snake) moveDown() {
+func (s *Snake) moveDown() bool {
 	s.root.y++ 
+	if (!s.isValidMove()){
+		// redo the move
+		s.root.y--
+		return false
+	}
+	return true
+
 
 }
 
-func (s *Snake) moveLeft() {
+func (s *Snake) moveLeft() bool {
 	s.root.x-- 
+	if (!s.isValidMove()){
+		// redo the move
+		s.root.x++
+		return false
+	}
+	return true
+
 
 }
 
-func (s *Snake) moveRight() {
+func (s *Snake) moveRight() bool {
 	s.root.x++ 
+	if (!s.isValidMove()){
+		// redo the move
+		s.root.x--
+		return false
+	}
+	return true
 
 }
 
