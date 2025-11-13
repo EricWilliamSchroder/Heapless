@@ -22,29 +22,6 @@ func checkForInterrupt(signalChan chan os.Signal) {
 	close(cleanupDone)
 }
 
-func gameLoop() {
-	src.Clear()
-	src.PrintBoard(board, snake)
-	keypresses := src.StartKeyboardReader()
-	// Print the current head (if any) using the snake API so coordinates
-	// are correct and any pointer/value semantics are preserved.
-	if h := snake.GetHead(); h != nil {
-		h.PrintPart()
-	}
-
-	for {
-		select {
-		case <-cleanupDone:
-			return
-		case value, ok := <-keypresses:
-			if !ok {
-				return
-			}
-
-			snake.Move(value, board)
-		}
-	}
-}
 
 func main() {
 	snake.InitWithParts()
@@ -57,19 +34,8 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
 	go checkForInterrupt(signalChan)
-	gameLoop()
+	src.GameLoop(&snake, board, cleanupDone)
 
 	src.Reset()
 
-	// // snake.PrintSnake()
-
-	// parts := snake.GetParts()
-	//src.Clear()
-
-	//src.PrintBoard(board)
-	// for i := 0; i < snake.Length(); i++ {
-	// 	p := parts[i]
-	// 	p.PrintPart()
-	// }
-	// src.Reset()
 }

@@ -3,6 +3,7 @@ package src
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strconv"
 )
 
@@ -13,36 +14,40 @@ func Clear() {
 }
 
 func Reset() {
-	os.Stdout.Write([]byte("\033[2J"))
-	os.Stdout.Write([]byte("\033[H"))
-	os.Stdout.Write([]byte("\033[?25h"))
+	exec.Command("stty", "sane").Run()
+	os.Stdout.Write([]byte("\033[?25h\033[0m\033[2J\033[H"))
+
+}
+
+func (snake *Snake) drawSnake(x, y int) bool{
+    drawn := false
+    for i := 0; i < snake.Length(); i++ {
+        p := &(snake.GetParts())[i]
+        if p.x == x && p.y == y {
+            // Sätt ANSI-position innan du ritar
+            seq := "\033[" + strconv.Itoa(y+1) + ";" + strconv.Itoa(x+1) + "H"
+            os.Stdout.Write([]byte(seq))
+            if i == 0 {
+                os.Stdout.Write([]byte("\033[32m0\033[0m")) // green head
+            } else {
+                os.Stdout.Write([]byte("\033[34m█\033[0m")) // blue body
+            }
+            drawn = true
+            break
+        }
+    }
+    return drawn
 }
 
 func PrintBoard(board [10][10]int, snake Snake) {
-
     for y := 0; y < len(board); y++ {
-        for x := 0; x < len(board[0]); x++ {
-            drawn := false
-            for i := 0; i < snake.Length(); i++ {
-                p := &(*snake.GetParts())[i]
-                if p.x == x && p.y == y {
-                    // Sätt ANSI-position innan du ritar
-                    seq := "\033[" + strconv.Itoa(y+1) + ";" + strconv.Itoa(x+1) + "H"
-                    os.Stdout.Write([]byte(seq))
-                    if i == 0 {
-                        os.Stdout.Write([]byte("0")) // huvud
-                    } else {
-                        os.Stdout.Write([]byte("█")) // kropp
-                    }
-                    drawn = true
-                    break
-                }
-            }
+        for x := range len(board[0]) {
+            drawn := snake.drawSnake(x, y)
             if !drawn {
                 // Skriv bakgrund
                 seq := "\033[" + strconv.Itoa(y+1) + ";" + strconv.Itoa(x+1) + "H"
                 os.Stdout.Write([]byte(seq))
-                os.Stdout.Write([]byte("#"))
+                os.Stdout.Write([]byte("\033[31m#\033[0m"))
             }
         }
     }
@@ -50,17 +55,6 @@ func PrintBoard(board [10][10]int, snake Snake) {
 
 
 
-func (part *Part) PrintPart() {
-	// Terminal coordinates are 1-based. Add 1 to both x and y so that
-	// logical board coordinates (starting at 0) map correctly to the terminal.
-	seq := "\033[" + strconv.Itoa((*part).y+1) + ";" + strconv.Itoa((*part).x+1) + "H"
-	os.Stdout.Write([]byte(seq))
-	if (*part).index < 1 {
-		os.Stdout.Write([]byte("0"))
-	} else {
-		os.Stdout.Write([]byte("█"))
-	}
-}
 
 func (part *Part) ReplaceWithHash(x, y int){
 	seq := "\033[" + strconv.Itoa(x) + ";" + strconv.Itoa(y) + "H"

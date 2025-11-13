@@ -10,6 +10,7 @@ import (
 
 const MaxSnakeLength = 100
 var parts [MaxSnakeLength]Part // global array, guaranteed not on heap
+var direction byte = 's'
 
 
 // Snake represents the full snake in the game.
@@ -97,19 +98,26 @@ func (s *Snake) AddPart(x, y int) {
 }
 
 func (s *Snake) Move(button byte, board [10][10]int){
-	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q'}
-
+	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q', 0}
 	isLegalButton := slices.Contains(legalKeyPresses, button)
-
+	
 	if (!isLegalButton){return}
 
 	if s.length == 0 {return}
 
 	prevX, prevY := s.root.x, s.root.y
-	specialCase := false
 	completedMove := false
 
-	switch button {
+	if button == legalKeyPresses[4] {
+		s.increaseSnakeLength()
+		button = direction
+	} 
+	if button != 0 && direction != button {
+		direction = button
+		button = 0
+	}
+
+	switch direction {
 		case 'w':
 			completedMove = s.moveUp()
 		case 's':
@@ -118,22 +126,19 @@ func (s *Snake) Move(button byte, board [10][10]int){
 			completedMove = s.moveRight()
 		case 'a':
 			completedMove = s.moveLeft()
-		case 'q':
-			s.increaseSnakeLength()
-			specialCase = true
 		case 27:
 			return
 
 	}
 
-	if (specialCase || !completedMove){return}
 	
-
-	for i := 1; i < s.length; i++ {
-		p := &s.parts[i]
-		p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+	if (completedMove){
+		for i := 1; i < s.length; i++ {
+			p := &s.parts[i]
+			p.x, p.y, prevX, prevY = prevX, prevY, p.x, p.y
+		}
 	}
-
+		
 	PrintBoard(board, *s)
 }
 
@@ -142,10 +147,6 @@ func (s *Snake) increaseSnakeLength(){
 	x, y := head.GetXY()
 	y++ // öka y för att växa nedåt
 	s.AddPart(x, y)
-
-	if s.Length() > 0 {
-		s.PrintSnake()
-	}
 }
 
 func (s *Snake) isValidMove() bool{
