@@ -4,7 +4,9 @@ import (
 	"time"
 )
 
-func GameLoop(snake *Snake, board [10][10]int, cleanupDone chan struct{}) {
+const Size int = 10
+
+func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
     const updateSpeed = 1000 * time.Millisecond // move every 150ms
 	Clear()
     keyPresses := StartKeyboardReader()

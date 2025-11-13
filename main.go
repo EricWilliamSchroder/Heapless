@@ -7,8 +7,8 @@ import (
 )
 
 var snake src.Snake // global Snake, stays stack/global
-const size int = 10
-var board [size][size]int
+
+var board [src.Size][src.Size]int
 
 var cleanupDone = make(chan struct{})
 

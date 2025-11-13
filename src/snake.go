@@ -97,7 +97,7 @@ func (s *Snake) AddPart(x, y int) {
 	s.length++
 }
 
-func (s *Snake) Move(button byte, board [10][10]int){
+func (s *Snake) Move(button byte, board [Size][Size]int){
 	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q', 0}
 	isLegalButton := slices.Contains(legalKeyPresses, button)
 	
@@ -142,10 +142,13 @@ func (s *Snake) Move(button byte, board [10][10]int){
 	PrintBoard(board, *s)
 }
 
+
+// TODO: Fix smarter adding of part right now the parts just adds to the positive Y axis
+
 func (s *Snake) increaseSnakeLength(){
 	head := s.GetHead()
 	x, y := head.GetXY()
-	y++ // öka y för att växa nedåt
+	y++ 
 	s.AddPart(x, y)
 }
 
