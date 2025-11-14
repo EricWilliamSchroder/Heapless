@@ -1,90 +1,111 @@
 package src
 
-const MaxSnakeLength = Size*Size
-var parts [MaxSnakeLength]Part // global array, guaranteed not on heap
+import "strconv"
+
+const MaxSnakeLength = Size * Size
+
+var Fragments [MaxSnakeLength]Fragment // global array, guaranteed not on heap
 var direction byte = 's'
 
-
 // Snake represents the full snake in the game.
-// It holds a reference to the root part of the snake (usually the head)
+// It holds a reference to the root Fragment of the snake (usually the head)
 // and can be extended to store additional game-related data such as score or length.
 type Snake struct {
 	// root is the first segment of the snake, typically the head.
-	root *Part
-	parts *[MaxSnakeLength]Part
-	length int
-
+	root      *Fragment
+	Fragments *[MaxSnakeLength]Fragment
+	length    int
 }
 
-
-// Part is a basic linked list
-// Part represents a single segment of the snake's body.
-// Each Part knows its coordinates and optionally links to the head and tail.
+// Fragment is a basic linked list
+// Fragment represents a single segment of the snake's body.
+// Each Fragment knows its coordinates and optionally links to the head and tail.
 // This allows easy traversal and management of the snake body.
-type Part struct {
-	// x and y are the coordinates of this snake part on the game grid.
-	x, y int
+type Fragment struct {
+	// x and y are the coordinates of this snake Fragment on the game grid.
+	x, y  int
 	index int
-	head *Part
-	tail *Part
+	head  *Fragment
+	tail  *Fragment
+	seq []byte
+	value []byte 
 }
 
-
-func (s *Snake) InitWithParts(){
-	s.parts = &parts
+func (s *Snake) InitWithFragments() {
+	s.Fragments = &Fragments
 	s.length = 0
 	s.root = nil
 }
 
-func (s *Snake) CreateSnake(initX, initY int){
-	(*s.parts)[0] = Part{x : initX, y : initY, head : &(*s.parts)[0], index: 0}
-	s.root = &(*s.parts)[0]
+func (s *Snake) CreateSnake(initX, initY int) {
+	(*s.Fragments)[0] = Fragment{x: initX, y: initY, head: &(*s.Fragments)[0], index: 0}
+	s.root = &(*s.Fragments)[0]
+	
+	s.root.seq = []byte("\033[" + strconv.Itoa(initY+YOffset) + 
+						";" + strconv.Itoa(initX+XOffset) + "H")
+	s.root.value = []byte("\033[31m" + "0" + "\033[0m")
 	s.length = 1
 }
 
-
-
-func (s *Snake) AddPart(x, y int) {
-	if s.length >= len(*s.parts) {
+func (s *Snake) AddFragment(x, y int) {
+	if s.length >= len(*s.Fragments) {
 		return
 	}
-	
-	newPart := &(*s.parts)[s.length]
-	newPart.x = x
-	newPart.y = y
-	newPart.index = s.length
-	newPart.head = s.root
-	newPart.tail = nil
-	
+
+	newFragment := &(*s.Fragments)[s.length]
+	newFragment.x = x
+	newFragment.y = y
+	newFragment.index = s.length
+	newFragment.head = s.root
+	newFragment.tail = nil
+
+
+	newFragment.seq = []byte("\033[" + strconv.Itoa(y+YOffset) + 
+						";" + strconv.Itoa(x+XOffset) + "H")
+	newFragment.value = []byte("\033[33m" + "v" + "\033[0m")
+
 	if s.length > 0 {
-		prevTail := &(*s.parts)[s.length-1]
-		prevTail.tail = newPart
+		prevTail := &(*s.Fragments)[s.length-1]
+		prevTail.tail = newFragment
+		if (prevTail.index != 0){
+			prevTail.value = []byte("\033[32m" + "8" + "\033[0m")
+		} else {
+			prevTail.value = []byte("\033[31m" + "0" + "\033[0m")
+		}
 	}
-	
+
 	s.length++
 }
 
 // Getters
-func (p *Part) GetXY() (int, int){
+func (p *Fragment) GetXY() (int, int) {
 	return (*p).x, (*p).y
 }
 
-func (s *Snake) GetParts() *[MaxSnakeLength]Part {
-	return s.parts
+func (s *Snake) GetFragments() *[MaxSnakeLength]Fragment {
+	return s.Fragments
 }
 
-func (s *Snake) GetHead() *Part {
-	if s.length == 0 || s.parts == nil {
+func (s *Snake) GetHead() *Fragment {
+	if s.length == 0 || s.Fragments == nil {
 		return nil
 	}
-	return &(*s.parts)[s.length-1]
+	return &(*s.Fragments)[s.length-1]
 }
 
-
-func (p *Part) GetTail() *Part{
+func (p *Fragment) GetTail() *Fragment {
 	return p.tail
 }
 
-func (s *Snake) Length()int{
+func (s *Snake) Length() int {
 	return s.length
+}
+
+func (f *Fragment) GetValue() []byte {
+	return f.value
+}
+
+
+func (f *Fragment) GetSeq() []byte {
+	return f.seq
 }

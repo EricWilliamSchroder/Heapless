@@ -7,7 +7,7 @@ A **terminal-based Snake game** written in **Go**, built under strict constraint
 **no heap**, **no AI**, **no dependencies** — only pure stack logic and terminal control.
 
 This project explores **absolute control** over Go’s memory behavior and runtime.
-It’s part game, part technical statement: *you don’t need a garbage collector to move a snake.*
+It’s Fragment game, Fragment technical statement: *you don’t need a garbage collector to move a snake.*
 
 ---
 
@@ -36,7 +36,7 @@ It’s part game, part technical statement: *you don’t need a garbage collecto
 3. **📦 No External Packages**
 
    * Only Go’s **standard library** is permitted.
-   * No third-party modules, frameworks, or “helpers.”
+   * No third-Fragmenty modules, frameworks, or “helpers.”
 
 4. **🧩 Stack Discipline**
 

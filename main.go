@@ -4,11 +4,12 @@ import (
 	"Heapless/src"
 	"os"
 	"os/signal"
+	
 )
 
 var snake src.Snake // global Snake, stays stack/global
 
-var board [src.Size][src.Size]int
+var board src.Board
 
 var cleanupDone = make(chan struct{})
 
@@ -22,9 +23,8 @@ func checkForInterrupt(signalChan chan os.Signal) {
 	close(cleanupDone)
 }
 
-
 func main() {
-	snake.InitWithParts()
+	snake.InitWithFragments()
 	snake.CreateSnake(5, 0)
 
 	// run the game loop in the main goroutine so the program doesn't exit
@@ -34,7 +34,10 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
 	go checkForInterrupt(signalChan)
+	board = src.CreateBoard()
 	src.GameLoop(&snake, board, cleanupDone)
+
+
 
 	src.Reset()
 

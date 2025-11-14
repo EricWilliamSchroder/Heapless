@@ -21,8 +21,8 @@ func Reset() {
 
 }
 
-func (part *Part) Debug() {
+func (Fragment *Fragment) Debug() {
 	seq := "\033[" + strconv.Itoa(20) + ";" + strconv.Itoa(20) + "H"
 	os.Stdout.Write([]byte(seq))
-	fmt.Printf("\033[20;20H%d", part.y)
+	fmt.Printf("\033[20;20H%d", Fragment.y)
 }

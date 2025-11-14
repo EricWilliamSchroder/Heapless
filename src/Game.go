@@ -17,14 +17,14 @@ func (s *Snake) IsGameOver() bool {
     
 }
 
-func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
+func GameLoop(snake *Snake, board Board, cleanupDone chan struct{}) {
     const updateSpeed = 100 * time.Millisecond // move every 150ms
 	Clear()
     keyPresses := StartKeyboardReader()
     ticker := time.NewTicker(updateSpeed)
     defer ticker.Stop()
 
-    PrintBoard(board, *snake)
+    PrintBoard(board, snake)
 
     for {
         select {
