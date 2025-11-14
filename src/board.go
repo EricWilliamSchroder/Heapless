@@ -2,65 +2,65 @@ package src
 
 import "strconv"
 
-
-const XOffset int = 1
-const YOffset int = 2
-
-type Part struct{
-	x, y int
-	seq []byte  // for showing the value later
-	value []byte
+type Part struct {
+	obstacle bool
+	x, y     int
+	seq      []byte // for showing the value later
+	value    []byte
 }
 
 type Board struct {
-	parts [Size * Size]Part
+	parts  [Size * Size]Part
 	length int
 }
 
 func CreateBoard() Board {
-    var board Board
-    board.length = 0
-    var val string
+	var Board Board
+	Board.length = 0
+	var val string
+	var obs bool
 
-    for y := 0; y < Size; y++ {
-        for x := 0; x < Size; x++ {
+	for y := 0; y < Size; y++ {
+		for x := 0; x < Size; x++ {
 
-            if x == 0 || x == Size-1 {
-                val = "│"
-            } else if y == 0 || y == Size-1 {
-                val = "─"
-            } else {
-                val = " "
-            }
-			
-            seq := []byte("\033[" + strconv.Itoa(y+YOffset) + 
-						";" + strconv.Itoa(x+XOffset) + "H")
-            value := []byte("\033[31m" + val + "\033[0m")
+			if x == 0 || x == Size-1 {
+				val = "│"
+				obs = true
+			} else if y == 0 || y == Size-1 {
+				val = "─"
+				obs = true
+			} else {
+				val = " "
+				obs = false
+			}
 
-            board.parts[board.length] = Part{
-                x:     x+1,
-                y:     y+2,
-                seq:   seq,
-                value: value,
-            }
+			seq := []byte("\033[" + strconv.Itoa(y+YOffset) +
+				";" + strconv.Itoa(x+XOffset) + "H")
+			value := []byte("\033[31m" + val + "\033[0m")
 
-            board.length++
-        }
-    }
+			Board.parts[Board.length] = Part{
+				x:        x,
+				y:        y,
+				seq:      seq,
+				value:    value,
+				obstacle: obs,
+			}
 
-    return board // returneras by value = stack
+			Board.length++
+		}
+	}
+
+	return Board // returneras by value = stack
 }
 
-
-
-func (part *Part) GetSeq() []byte{
+func (part *Part) GetSeq() []byte {
 	return part.seq
 }
 
-func (part *Part) GetValue() []byte{
+func (part *Part) GetValue() []byte {
 	return part.value
 }
 
-func (board Board) GetParts() [Size*Size]Part{
-	return board.parts
+func (Board Board) GetParts() [Size * Size]Part {
+	return Board.parts
 }

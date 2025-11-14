@@ -5,8 +5,8 @@ import (
 	"strconv"
 )
 
-func (s *Snake) Move(button byte, board Board) {
-	//PrintBoard(board, *s)
+func (s *Snake) Move(button byte) {
+	//PrintBoard(Board, *s)
 	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q', 0}
 	isLegalButton := slices.Contains(legalKeyPresses, button)
 
@@ -46,10 +46,11 @@ func (s *Snake) Move(button byte, board Board) {
 		return
 
 	}
-
 	if completedMove {
 		// update head seq to its new coordinates
-		prev.seq = []byte("\033[" + strconv.Itoa(prev.y+YOffset) + ";" + strconv.Itoa(prev.x+XOffset) + "H")
+		prev.seq = []byte("\033[" +
+			strconv.Itoa(prev.y+YOffset) +
+			";" + strconv.Itoa(prev.x+XOffset) + "H")
 
 		for i := 1; i < s.length; i++ {
 			p := &s.Fragments[i]
@@ -59,9 +60,9 @@ func (s *Snake) Move(button byte, board Board) {
 			p.seq, prevSeq = prevSeq, p.seq
 			prev = p
 		}
+		PrintBoard(s)
 	}
 
-	PrintBoard(board, s)
 }
 
 func (s *Snake) increaseSnakeLength() {
@@ -72,21 +73,21 @@ func (s *Snake) increaseSnakeLength() {
 }
 
 func (s *Snake) isValidMove() bool {
-	side := Size
-
-	if s.root.y >= side+1 || s.root.y < -1 {
-		return false
-	}
-	if s.root.x >= side+1 || s.root.x < -1 {
-		return false
+	for i := 0; i < GameBoard.length; i++ {
+		elm := GameBoard.parts[i]
+		if !elm.obstacle {
+			continue
+		}
+		if elm.x == s.root.x && elm.y == s.root.y {
+			return false
+		}
 	}
 
 	return true
-
 }
 
 func (s *Snake) moveUp() bool {
-	s.root.y-- // flytta huvudet upp
+	s.root.y-- // move head up
 	if !s.isValidMove() {
 		// redo the move
 		s.root.y++
@@ -97,7 +98,7 @@ func (s *Snake) moveUp() bool {
 }
 
 func (s *Snake) moveDown() bool {
-	s.root.y++
+	s.root.y++ // move head down
 	if !s.isValidMove() {
 		// redo the move
 		s.root.y--
@@ -108,7 +109,7 @@ func (s *Snake) moveDown() bool {
 }
 
 func (s *Snake) moveLeft() bool {
-	s.root.x--
+	s.root.x-- // move head left
 	if !s.isValidMove() {
 		// redo the move
 		s.root.x++
@@ -119,7 +120,7 @@ func (s *Snake) moveLeft() bool {
 }
 
 func (s *Snake) moveRight() bool {
-	s.root.x++
+	s.root.x++ // move head right
 	if !s.isValidMove() {
 		// redo the move
 		s.root.x--

@@ -5,7 +5,7 @@ import (
 	"os/exec"
 )
 
-func StartKeyboardReader() <-chan byte {
+func StartKeyBoardReader() <-chan byte {
 	ch := make(chan byte)
 
 	// Sätt terminalen i raw mode **innan** goroutinen startas

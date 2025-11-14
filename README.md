@@ -115,7 +115,7 @@ Learn more about Go’s memory model:
 
 * [ ] Terminal grid rendering with ANSI codes
 * [ ] Non-blocking input
-* [ ] Static board array
+* [ ] Static Board array
 * [ ] Collision + growth logic
 * [ ] Score display
 

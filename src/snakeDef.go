@@ -2,9 +2,7 @@ package src
 
 import "strconv"
 
-const MaxSnakeLength = Size * Size
 
-var Fragments [MaxSnakeLength]Fragment // global array, guaranteed not on heap
 var direction byte = 's'
 
 // Snake represents the full snake in the game.

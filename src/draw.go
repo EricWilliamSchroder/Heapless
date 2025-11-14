@@ -18,32 +18,24 @@ func (p *Fragment) getTypeOfTail() string {
 }
 
 func (snake *Snake) drawSnake() {
-    fragments := snake.GetFragments()
-    for _, el := range fragments{
+	fragments := snake.GetFragments()
+	for _, el := range fragments {
 		os.Stdout.Write(el.GetSeq())
 		os.Stdout.Write(el.GetValue())
 	}
 
 }
 
-func drawBox(board Board) {
-	parts := board.GetParts()
-    for _, el := range parts{
+func drawBox() {
+	parts := GameBoard.GetParts()
+	for _, el := range parts {
 		os.Stdout.Write(el.GetSeq())
 		os.Stdout.Write(el.GetValue())
 	}
 }
 
+func PrintBoard(snake *Snake) {
+	drawBox()
+	snake.drawSnake()
 
-func PrintBoard(board Board, snake *Snake) {
-    drawBox(board)
-    snake.drawSnake()
-    //snake.Debug()
-	
-}
-
-
-func (snake *Snake) Debug(){
-    println("\nCoords: ", snake.root.x, snake.root.y)
-    println("\nValid: " , snake.isValidMove())
 }
