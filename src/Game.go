@@ -18,7 +18,7 @@ func (s *Snake) IsGameOver() bool {
 }
 
 func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
-    const updateSpeed = 1000 * time.Millisecond // move every 150ms
+    const updateSpeed = 100 * time.Millisecond // move every 150ms
 	Clear()
     keyPresses := StartKeyboardReader()
     ticker := time.NewTicker(updateSpeed)
@@ -40,7 +40,7 @@ func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
 
         case <-ticker.C:
             // Move every tick using the current direction
-            snake.Move(0, board)
+            //snake.Move(0, board)
         }
     }
 }

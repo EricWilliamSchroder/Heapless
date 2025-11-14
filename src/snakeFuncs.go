@@ -3,6 +3,7 @@ package src
 import "slices"
 
 func (s *Snake) Move(button byte, board [Size][Size]int){
+	//PrintBoard(board, *s)
 	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q', 0}
 	isLegalButton := slices.Contains(legalKeyPresses, button)
 
