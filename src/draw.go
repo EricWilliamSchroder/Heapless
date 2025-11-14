@@ -67,7 +67,7 @@ func drawBox(board [Size][Size]int, offsetY, offsetX int, info string, snakeX, s
         seq := "\033[" + strconv.Itoa(y) + ";" + strconv.Itoa(x) + "H"
         os.Stdout.Write([]byte(seq))
 
-        if x == termSnakeX && y == termSnakeY {
+        if x-1 == termSnakeX && y-1 == termSnakeY {
             os.Stdout.Write([]byte("0"))
         } else {
             os.Stdout.Write([]byte("─"))
@@ -81,7 +81,7 @@ func drawBox(board [Size][Size]int, offsetY, offsetX int, info string, snakeX, s
         // vänster
         seqLeft := "\033[" + strconv.Itoa(realY) + ";" + strconv.Itoa(offsetX) + "H"
         os.Stdout.Write([]byte(seqLeft))
-        if offsetX == termSnakeX && realY == termSnakeY {
+        if offsetX == termSnakeX && realY-1 == termSnakeY {
             os.Stdout.Write([]byte("0"))
         } else {
             os.Stdout.Write([]byte("│"))
@@ -90,7 +90,7 @@ func drawBox(board [Size][Size]int, offsetY, offsetX int, info string, snakeX, s
         // höger
         seqRight := "\033[" + strconv.Itoa(realY) + ";" + strconv.Itoa(offsetX+width+1) + "H"
         os.Stdout.Write([]byte(seqRight))
-        if offsetX+width+1 == termSnakeX && realY == termSnakeY {
+        if offsetX+width+1 == termSnakeX && realY-1 == termSnakeY {
             os.Stdout.Write([]byte("0"))
         } else {
             os.Stdout.Write([]byte("│"))
@@ -105,7 +105,7 @@ func drawBox(board [Size][Size]int, offsetY, offsetX int, info string, snakeX, s
         seq := "\033[" + strconv.Itoa(y) + ";" + strconv.Itoa(x) + "H"
         os.Stdout.Write([]byte(seq))
 
-        if x == termSnakeX && y == termSnakeY {
+        if x-1 == termSnakeX && y == termSnakeY {
             os.Stdout.Write([]byte("0"))
         } else if i == 0 || i == width+1 {
             os.Stdout.Write([]byte("│"))

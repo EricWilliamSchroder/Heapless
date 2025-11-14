@@ -57,8 +57,8 @@ func (s *Snake) increaseSnakeLength(){
 func (s *Snake) isValidMove() bool{
 	side := Size
 
-	if (s.root.y >= side+1 || s.root.y < 0){return false}
-	if (s.root.x >= side+1 || s.root.x < 0){return false}
+	if (s.root.y >= side+1 || s.root.y < -1){return false}
+	if (s.root.x >= side+1 || s.root.x < -1){return false}
 
 	return true
 	
