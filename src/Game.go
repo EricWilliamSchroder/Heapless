@@ -6,8 +6,19 @@ import (
 
 const Size int = 20
 
+
+func (s *Snake) IsGameOver() bool {
+    side := Size
+
+	if (s.root.y >= side || s.root.y < 0){return true}
+	if (s.root.x >= side || s.root.x < 0){return true}
+
+    return false
+    
+}
+
 func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
-    const updateSpeed = 1000 * time.Millisecond // move every 150ms
+    const updateSpeed = 100 * time.Millisecond // move every 150ms
 	Clear()
     keyPresses := StartKeyboardReader()
     ticker := time.NewTicker(updateSpeed)
