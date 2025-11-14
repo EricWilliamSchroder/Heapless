@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-const Size int = 10
+const Size int = 20
 
 func GameLoop(snake *Snake, board [Size][Size]int, cleanupDone chan struct{}) {
     const updateSpeed = 1000 * time.Millisecond // move every 150ms

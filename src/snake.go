@@ -4,7 +4,6 @@ import (
 	"os"
 	"slices"
 	"strconv"
-	"math"
 )
 
 
@@ -153,8 +152,7 @@ func (s *Snake) increaseSnakeLength(){
 }
 
 func (s *Snake) isValidMove() bool{
-	sideF := math.Sqrt(MaxSnakeLength)
-	side := int(sideF)
+	side := Size
 
 	if (s.root.y >= side || s.root.y < 0){return false}
 	if (s.root.x >= side || s.root.x < 0){return false}
