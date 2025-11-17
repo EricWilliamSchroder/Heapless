@@ -123,8 +123,11 @@ func CreateBoard() Board {
 			} else if y == 0 || y == Size-1 {
 				val = "─"
 				obs = true
-			} else{
+			} else if (x % 2 == 0){
 				val = "#"
+				obs = false
+			} else {
+				val = " "
 				obs = false
 			}
 

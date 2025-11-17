@@ -2,7 +2,9 @@ package src
 
 import "time"
 
-const Size int = 30
+const playingFieldSize = 10
+
+const Size int = playingFieldSize + 2 // because the borders remove 2
 const MaxSnakeLength = Size * Size
 const XOffset int = 20
 const YOffset int = 2
