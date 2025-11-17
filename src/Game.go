@@ -10,15 +10,15 @@ func GameLoop(snake *Snake, cleanupDone chan struct{}) {
 
 	Clear()
 	keyPresses := StartKeyBoardReader()
-	ticker := time.NewTicker(UpdateSpeed)
+	ticker := time.NewTicker(tickSpeed)
 	defer ticker.Stop()
 
 	PrintBoard(snake)
 
-	for !IsGameOver{
+	for !IsGameOver {
+		snake.IsGameOverCompletely()
 		snake.onPowerUp()
-		
-		if (GameBoard.fruitsLength == 0){
+		if GameBoard.fruitsLength == 0 {
 			snake.AddFruits(3)
 		}
 
@@ -26,19 +26,14 @@ func GameLoop(snake *Snake, cleanupDone chan struct{}) {
 		case <-cleanupDone:
 			return
 
-		case value, ok := <-keyPresses:
-			if !ok {
-				return
-			}
-			// Only update direction — no movement here
-			snake.Move(value)
+		case key := <-keyPresses:
+			snake.UpdateDirection(key)   // endast riktningsbyte
 
 		case <-ticker.C:
-			// Move every tick using the current direction
-			snake.Move(0)
+			snake.Move()   // faktiskt movement
 		}
-		
 	}
+
 
 	drawBox(snake, 0)
 	snake.drawSnake()

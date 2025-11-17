@@ -2,21 +2,11 @@ package src
 
 import (
 	"os"
+	"slices"
 	"strconv"
 )
 
-func (p *Fragment) getTypeOfTail() string {
-	head := p.head
-
-	if head.x > p.x {
-		return "→"
-	} else if head.x < p.x {
-		return "←"
-	} else if head.y > p.y {
-		return "↓"
-	}
-	return "↑"
-}
+var prevLength int
 
 func (snake *Snake) drawSnake() {
 	fragments := snake.GetFragments()
@@ -36,13 +26,19 @@ func drawBox(snake *Snake, promptType int) {
 	if (IsGameOver && promptType == 0){
 		GameBoard.CenterText("GAME OVER!!!")
 	} else if (!IsGameOver && promptType == 0){
-		GameBoard.CenterText("Score: " + strconv.Itoa(snake.length))
+		if (prevLength != snake.length){
+			GameBoard.CenterText("Score: " + strconv.Itoa(snake.length))	
+			prevLength = snake.length
+		}
 	} else {
-		GameBoard.CenterText("Game over!! Your core: " + strconv.Itoa(snake.length))
+		GameBoard.CenterText("Game over!! Your Score: " + strconv.Itoa(snake.length))
 	}
 	if (promptType != 1){
 
 		for _, el := range parts {
+			if slices.Contains(el.value, byte('#')) && snake.length > 6{
+				el.value = []byte("\033[36m" + " " + "\033[0m")
+			}
 			os.Stdout.Write(el.GetSeq())
 			os.Stdout.Write(el.GetValue())
 		}
