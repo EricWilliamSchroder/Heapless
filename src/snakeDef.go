@@ -107,3 +107,9 @@ func (f *Fragment) GetValue() []byte {
 func (f *Fragment) GetSeq() []byte {
 	return f.seq
 }
+
+func (f *Fragment) GetRelativePosition() (int, int){
+	x := XOffset - f.x
+	y := YOffset - f.y
+	return x, y
+}

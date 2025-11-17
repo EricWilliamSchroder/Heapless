@@ -68,17 +68,33 @@ func (s *Snake) Move(button byte) {
 func (s *Snake) increaseSnakeLength() {
 	head := s.GetHead()
 	x, y := head.GetXY()
-	y++
+	y += 2
 	s.AddFragment(x, y)
 }
 
 func (s *Snake) isValidMove() bool {
-	for i := 0; i < GameBoard.length; i++ {
+
+	
+
+	for i := 0; i < GameBoard.partsLength; i++ {
 		elm := GameBoard.parts[i]
 		if !elm.obstacle {
 			continue
 		}
-		if elm.x == s.root.x && elm.y == s.root.y {
+
+		if s.root.x < 0 || s.root.x > Size-1{
+			IsGameOver = true
+			return false
+		}
+
+		if s.root.y < 0 || s.root.y > Size-1{
+			IsGameOver = true
+			return false
+		}
+	}
+	if (s.root.tail != nil){
+		if s.root.x == s.root.tail.x && s.root.y == s.root.tail.y{
+			IsGameOver = true
 			return false
 		}
 	}

@@ -2,6 +2,7 @@ package src
 
 import (
 	"os"
+	"strconv"
 )
 
 func (p *Fragment) getTypeOfTail() string {
@@ -26,16 +27,33 @@ func (snake *Snake) drawSnake() {
 
 }
 
-func drawBox() {
+
+
+func drawBox(snake *Snake, promptType int) {
 	parts := GameBoard.GetParts()
-	for _, el := range parts {
-		os.Stdout.Write(el.GetSeq())
-		os.Stdout.Write(el.GetValue())
+	os.Stdout.Write(GameBoard.seq)
+	os.Stdout.Write([]byte("                "))
+	if (IsGameOver && promptType == 0){
+		GameBoard.CenterText("GAME OVER!!!")
+	} else if (!IsGameOver && promptType == 0){
+		GameBoard.CenterText("Score: " + strconv.Itoa(snake.length))
+	} else {
+		GameBoard.CenterText("Game over!! Your core: " + strconv.Itoa(snake.length))
 	}
+	if (promptType != 1){
+
+		for _, el := range parts {
+			os.Stdout.Write(el.GetSeq())
+			os.Stdout.Write(el.GetValue())
+		}
+	}
+
+	os.Stdout.Write(GameBoard.seq)
+	os.Stdout.Write(GameBoard.prompt)
 }
 
 func PrintBoard(snake *Snake) {
-	drawBox()
+	drawBox(snake, 0)
 	snake.drawSnake()
 
 }

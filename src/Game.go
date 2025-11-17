@@ -4,22 +4,10 @@ import (
 	"time"
 )
 
-func (s *Snake) IsGameOver() bool {
-	side := Size
 
-	if s.root.y >= side || s.root.y <= 0 {
-		return true
-	}
-	if s.root.x >= side || s.root.x <= 0 {
-		return true
-	}
-
-	return false
-
-}
 
 func GameLoop(snake *Snake, cleanupDone chan struct{}) {
-	const updateSpeed = 1 * time.Millisecond // move every 150ms
+	const updateSpeed = 1000 * time.Millisecond // move every 150ms
 	Clear()
 	keyPresses := StartKeyBoardReader()
 	ticker := time.NewTicker(updateSpeed)
@@ -27,7 +15,7 @@ func GameLoop(snake *Snake, cleanupDone chan struct{}) {
 
 	PrintBoard(snake)
 
-	for {
+	for !IsGameOver {
 		select {
 		case <-cleanupDone:
 			return
@@ -44,4 +32,11 @@ func GameLoop(snake *Snake, cleanupDone chan struct{}) {
 			snake.Move(0)
 		}
 	}
+
+	drawBox(snake, 0)
+	snake.drawSnake()
+	drawBox(snake, 1)
+	
+
+	time.Sleep(2*time.Second)
 }
