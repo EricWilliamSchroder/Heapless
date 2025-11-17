@@ -26,38 +26,58 @@ type Board struct {
 	fruitsLength int
 }
 
+func (s *Snake) isGoodSpot(x, y int) bool {
+	fragments := s.Fragments
+	for _, f := range fragments{
+		if (!(x + 5 < f.x || y - 5 > f.x)){return false}
+		if (!(y + 5 < f.y || y - 5 > f.y)){return false}
+	}
+	return true
+}
+
 // N is the number of fruits randomly placed
-func AddFruits(N int) {
-	var seenCords [Size * Size][2]int
-	GameBoard.fruitsLength = 0
-	for GameBoard.fruitsLength < N {
-		yCord := rand.Intn(Size)
-		xCord := rand.Intn(Size)
-		cords := [2]int{xCord, yCord}
-		if hasBeenSeen(cords, seenCords) {
-			continue
-		}
+func (s *Snake) AddFruits(N int) {
+    var seenCords [Size * Size][2]int
+    seenIdx := 0
 
-		seq := []byte("\033[" + strconv.Itoa(yCord+YOffset) +
-			";" + strconv.Itoa(xCord+XOffset) + "H")
+    fruits := []string{"🍑", "🍆", "🍒", "🍉", "🥒"}
 
-		GameBoard.fruits[GameBoard.fruitsLength] = Fruit{x: xCord,
-			y:   yCord,
-			seq: seq}
-	}
+    GameBoard.fruitsLength = 0
 
+    for GameBoard.fruitsLength < N {
+
+        xCord := rand.Intn(Size-2) + 1
+        yCord := rand.Intn(Size-2) + 1
+        cords := [2]int{xCord, yCord}
+
+		if (!s.isGoodSpot(xCord, yCord)) {continue}
+        if hasBeenSeen(cords, &seenCords) {continue}
+
+        seenCords[seenIdx] = cords
+        seenIdx++
+
+        seq := []byte("\033[" + strconv.Itoa(yCord+YOffset) +
+            ";" + strconv.Itoa(xCord+XOffset) + "H")
+        value := []byte("\033[33m" + fruits[rand.Intn(len(fruits))] + "\033[0m")
+
+        GameBoard.fruits[GameBoard.fruitsLength] = Fruit{
+            x:     xCord,
+            y:     yCord,
+            seq:   seq,
+            value: value,
+        }
+
+        GameBoard.fruitsLength++
+    }
 }
 
-func hasBeenSeen(newCords [2]int, seenCords [Size * Size][2]int) bool {
-	for i := 0; i < len(seenCords); i++ {
-		if seenCords[i][0] == newCords[0] &&
-			seenCords[i][1] == newCords[1] {
-			return true
-		}
-	}
-
-	return false
+func hasBeenSeen(newCords [2]int, seen *[Size*Size][2]int) bool {
+    for i := range len(seen) {
+        if seen[i] == newCords {return true}
+    }
+    return false
 }
+
 
 func (b *Board) CenterText(prompt string) {
 	midX := (Size/2) + len(prompt)

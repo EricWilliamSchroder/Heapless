@@ -52,8 +52,18 @@ func drawBox(snake *Snake, promptType int) {
 	os.Stdout.Write(GameBoard.prompt)
 }
 
+func drawFruits(){
+	fruits := GameBoard.fruits
+
+	for _, el := range fruits{
+		os.Stdout.Write(el.seq)
+		os.Stdout.Write(el.value)
+	}
+}
+
 func PrintBoard(snake *Snake) {
 	drawBox(snake, 0)
+	drawFruits()
 	snake.drawSnake()
 
 }

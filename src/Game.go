@@ -7,15 +7,21 @@ import (
 
 
 func GameLoop(snake *Snake, cleanupDone chan struct{}) {
-	const updateSpeed = 1000 * time.Millisecond // move every 150ms
+
 	Clear()
 	keyPresses := StartKeyBoardReader()
-	ticker := time.NewTicker(updateSpeed)
+	ticker := time.NewTicker(UpdateSpeed)
 	defer ticker.Stop()
 
 	PrintBoard(snake)
 
-	for !IsGameOver {
+	for !IsGameOver{
+		snake.onPowerUp()
+		
+		if (GameBoard.fruitsLength == 0){
+			snake.AddFruits(3)
+		}
+
 		select {
 		case <-cleanupDone:
 			return
@@ -31,6 +37,7 @@ func GameLoop(snake *Snake, cleanupDone chan struct{}) {
 			// Move every tick using the current direction
 			snake.Move(0)
 		}
+		
 	}
 
 	drawBox(snake, 0)

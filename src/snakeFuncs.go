@@ -7,7 +7,7 @@ import (
 
 func (s *Snake) Move(button byte) {
 	//PrintBoard(Board, *s)
-	legalKeyPresses := []byte{'w', 'a', 'd', 's', 'q', 0}
+	legalKeyPresses := []byte{'w', 'a', 'd', 's', 0}
 	isLegalButton := slices.Contains(legalKeyPresses, button)
 
 	if !isLegalButton {
@@ -24,10 +24,6 @@ func (s *Snake) Move(button byte) {
 	prevSeq := prev.seq
 	completedMove := false
 
-	if button == legalKeyPresses[4] {
-		s.increaseSnakeLength()
-		button = direction
-	}
 	if button != 0 && direction != button {
 		direction = button
 		button = 0
@@ -72,6 +68,21 @@ func (s *Snake) increaseSnakeLength() {
 	s.AddFragment(x, y)
 }
 
+func (s *Snake) onPowerUp() {
+    for i := 0; i < GameBoard.fruitsLength; i++ {
+        elm := GameBoard.fruits[i]
+
+        if s.root.x == elm.x && s.root.y == elm.y {
+            s.increaseSnakeLength()
+            GameBoard.fruits[i] = Fruit{}
+
+            GameBoard.fruitsLength--
+            i--
+        }
+    }
+}
+
+
 func (s *Snake) isValidMove() bool {
 
 	
@@ -92,6 +103,8 @@ func (s *Snake) isValidMove() bool {
 			return false
 		}
 	}
+
+	// dont walk on yourself
 	if (s.root.tail != nil){
 		if s.root.x == s.root.tail.x && s.root.y == s.root.tail.y{
 			IsGameOver = true
