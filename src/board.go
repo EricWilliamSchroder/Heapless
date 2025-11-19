@@ -56,8 +56,8 @@ func (s *Snake) AddFruits(N int) {
 
 	for GameBoard.fruitsLength < N {
 
-		xCord := rand.Intn(Size-3) + 1
-		yCord := rand.Intn(Size-3) + 1
+		xCord := rand.Intn(Size-4) + 1
+		yCord := rand.Intn(Size-4) + 1
 		cords := [2]int{xCord, yCord}
 
 		if !s.isGoodSpot(xCord, yCord) {
